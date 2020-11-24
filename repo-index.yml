@@ -23,5 +23,5 @@
   description: CF plugin for restaging all applications within an pcf space with minimal downtime.
   homepage: https://github.com/generalmotors/cf-restage-all
   name: cf-restage-all
-  updated: 2020-11-24T18:03:46Z
+  updated: 2020-11-24T18:41:19Z
   version: 1.0.0
