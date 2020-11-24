@@ -1,0 +1,27 @@
+- authors:
+    - contact: justin.klein@gm.com
+      homepage: https://github.com/generalmotors/cf-restage-all
+      name: Justin Klein
+  binaries:
+    - checksum: {{darwin_amd64_checksum}}
+      platform: osx
+      url: https://github.com/generalmotors/cf-restage-all/releases/download/v{{version}}/{{darwin_amd64_filename}}
+    - checksum: {{windows_386_checksum}}
+      platform: win32
+      url: https://github.com/generalmotors/cf-restage-all/releases/download/v{{version}}/{{windows_386_filename}}
+    - checksum: {{windows_amd64_checksum}}
+      platform: win64
+      url: https://github.com/generalmotors/cf-restage-all/releases/download/v{{version}}/{{windows_amd64_filename}}
+    - checksum: {{linux_386_checksum}}
+      platform: linux32
+      url: https://github.com/generalmotors/cf-restage-all/releases/download/v{{version}}/{{linux_386_filename}}
+    - checksum: {{linux_amd64_checksum}}
+      platform: linux64
+      url: https://github.com/generalmotors/cf-restage-all/releases/download/v{{version}}/{{linux_amd64_filename}}
+  company: General Motors
+  created: 2020-8-20T00:00:00Z
+  description: CF plugin for restaging all applications within an pcf space with minimal downtime.
+  homepage: https://github.com/generalmotors/cf-restage-all
+  name: cf-restage-all
+  updated: {{updated}}
+  version: {{version}}

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+cd "$(dirname "$0")"/..
+
+echo ""
+echo "building"
+
+gofmt -w restage_all_suite_test.go
+gofmt -w restage_all_test.go
+gofmt -w restage_all.go
+go vet -all
+
+echo ""
+echo "testing"
+go test -coverprofile=coverage.txt -covermode=count .
+
+echo ""
+echo "go build"
+go build
+
+echo ""
+echo "done!"

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+cd "$(dirname "$0")"/..
+
+function build() {
+    local os="$1"
+    local cpu="$2"
+
+    local filename="releases/cf-restage-all-${cpu}-${os}"
+
+    if [[ ${os} == "windows" ]]; then
+        filename="${filename}.exe"
+    fi
+
+    CGO_ENABLED=0 GOOS="${os}" GOARCH="${cpu}" \
+    go build -o "$filename" restage_all.go
+
+    sha1="$(shasum -a 1 "$filename" | cut -d ' ' -f 1)"
+
+    SED_OPTS=()
+    SED_OPTS+=("-e s|{{${os}_${cpu}_checksum}}|${sha1}|g" )
+    SED_OPTS+=("-e s|{{${os}_${cpu}_filename}}|$filename|g" )
+
+    yml="$(sed "${SED_OPTS[@]}" repo-index.yml)"
+    echo "$yml" > repo-index.yml
+
+    echo "Created $filename"
+}
+
+
+function yamlRelease() {
+  rm -f repo-index.yml
+  rm -rf releases
+  cp repo-index-template.yml repo-index.yml
+
+  SED_OPTS=()
+  NOW="$(TZ=UC date +'%Y-%m-%dT%TZ')"
+  SED_OPTS+=("-e s|{{updated}}|${NOW}|g" )
+
+  version_info=$(sed -n '/VersionType/,/MinCliVersion/p' restage_all.go)
+  Major=$(sed -n '/VersionType/,/MinCliVersion/p' restage_all.go | sed -n -e 's/^.*Major: //p' | sed 's/\,/./g')
+  Minor=$(sed -n '/VersionType/,/MinCliVersion/p' restage_all.go | sed -n -e 's/^.*Minor: //p' | sed 's/\,/./g')
+  Build=$(sed -n '/VersionType/,/MinCliVersion/p' restage_all.go | sed -n -e 's/^.*Build: //p' | sed 's/\,//g')
+
+  SED_OPTS+=("-e s|{{version}}|${Major}${Minor}${Build}|g" )
+
+  yml="$(sed "${SED_OPTS[@]}" repo-index.yml)"
+  echo "$yml" > repo-index.yml
+}
+
+if ! builtin type -p shasum &>/dev/null; then
+    echo "ERROR: shasum not installed" >&2
+    exit 1
+fi
+
+yamlRelease
+echo ""
+echo "Building new releases"
+build darwin amd64
+build linux 386
+build linux amd64
+build windows 386
+build windows amd64
+
+
+echo ""
+echo "done!"
