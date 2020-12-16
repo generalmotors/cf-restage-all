@@ -13,7 +13,7 @@ This plugin requires the CF CLI. You can get the latest version of this plugin b
 To install the plugin, use the following command 
 
 ```
-$ cf install-plugin -r CF-Community “cf-restage-a”
+$ cf install-plugin -r CF-Community “cf-restage-all”
 ```
 
 ## Usage
